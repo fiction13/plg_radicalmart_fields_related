@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   plg_radicalmart_fields_related
+  ~ @version   1.0.0
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+
+<form addfieldpath="/administrator/components/com_radicalmart/models/fields">
+    <field name="id" type="products"
+           label="PLG_RADICALMART_FIELDS_RELATED_OPTIONS_PRODUCT"
+           class="input-large"/>
+
+    <field name="text" type="text"
+           label="PLG_RADICALMART_FIELDS_RELATED_OPTIONS_TEXT"/>
+</form>

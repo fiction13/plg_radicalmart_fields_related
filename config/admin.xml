@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   plg_radicalmart_fields_related
+  ~ @version   1.0.0
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+<form>
+    <fieldset name="content">
+        <fields name="params" addfieldpath="/plugins/radicalmart_fields/related/fields">
+            <field name="required" type="radio"
+                   label="PLG_RADICALMART_FIELDS_RELATED_REQUIRED"
+                   class="btn-group btn-group-yesno"
+                   default="0">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+			<field name="show_group_title"
+                   type="radio"
+                   label="PLG_RADICALMART_FIELDS_RELATED_SHOW_GROUP_TITLE"
+                   class="btn-group btn-group-yesno"
+                   default="1"
+                   filter="integer"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="show_category"
+                   type="radio"
+                   label="PLG_RADICALMART_FIELDS_RELATED_SHOW_CATEGORY"
+                   class="btn-group btn-group-yesno"
+                   default="1"
+                   filter="integer"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+
+            <field name="layout" type="relatedlayout"
+                   label="PLG_RADICALMART_FIELDS_RELATED_LAYOUT"
+                   default="default"/>
+
+            <field name="cols"
+                   type="integer"
+                   label="PLG_RADICALMART_FIELDS_RELATED_COLS"
+                   first="1" last="5" step="1" default="3"
+            />
+        </fields>
+    </fieldset>
+</form>
