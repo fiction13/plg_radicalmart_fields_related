@@ -17,6 +17,7 @@ use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Version;
 use Joomla\Registry\Registry;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
@@ -110,17 +111,33 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		if ($field->plugin !== 'related') return false;
 
 		// Add Javascript
-		Factory::getDocument()->addScriptDeclaration('
-            document.addEventListener("DOMContentLoaded", function(event) {
-                let relatedContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-                let relatedLabel = relatedContainer.querySelector(\'.control-label\');
-                
-                relatedLabel.style.marginLeft = "28px";
-                relatedLabel.classList.add(\'lead\');
-                relatedLabel.classList.remove(\'control-label\');
-                relatedContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-            });
-        ');
+		if ((new Version())->isCompatible('4.0'))
+		{
+			Factory::getDocument()->addScriptDeclaration('
+	            document.addEventListener("DOMContentLoaded", function(event) {
+	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
+	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
+	                
+	                downloadLabel.classList.add(\'fw-bold\');
+	                downloadLabel.classList.add(\'mb-2\');
+	                downloadLabel.classList.remove(\'control-label\');
+	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
+	            });
+	        ');
+		}
+		else{
+			Factory::getDocument()->addScriptDeclaration('
+	            document.addEventListener("DOMContentLoaded", function(event) {
+	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
+	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
+	                
+	                downloadLabel.style.marginLeft = "28px";
+	                downloadLabel.classList.add(\'lead\');
+	                downloadLabel.classList.remove(\'control-label\');
+	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
+	            });
+	        ');
+		}
 
 		// Add Stylesheet
 		Factory::getDocument()->addStyleDeclaration('
@@ -190,12 +207,7 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 	 */
 	public function onRadicalMartGetProductsFieldValue($context = null, $field = null, $value = null)
 	{
-		if ($context !== 'com_radicalmart.category' && $context !== 'com_radicalmart.products') return false;
-		if ($field->plugin !== 'related') return false;
-
-		if (!(int) $field->params->get('display_products', 1)) return false;
-
-		return $this->getFieldValue($field, $value);
+		if ($field->plugin === 'related') return;
 	}
 
 	/**

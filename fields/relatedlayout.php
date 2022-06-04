@@ -179,7 +179,7 @@ class JFormFieldRelatedlayout extends FormField
 			// Add a grouped list
 			$html[] = HTMLHelper::_(
 				'select.groupedlist', $groups, $this->name,
-				array('id' => $this->id, 'group.id' => 'id', 'list.attr' => $attr, 'list.select' => $selected)
+				array('id' => $this->id, 'class' => 'form-select', 'group.id' => 'id', 'list.attr' => $attr, 'list.select' => $selected)
 			);
 
 			return implode($html);

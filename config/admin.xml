@@ -19,7 +19,7 @@
                 <option value="0">JNO</option>
             </field>
 
-			<field name="show_group_title"
+            <field name="show_group_title"
                    type="radio"
                    label="PLG_RADICALMART_FIELDS_RELATED_SHOW_GROUP_TITLE"
                    class="btn-group btn-group-yesno"
@@ -43,7 +43,9 @@
 
             <field name="layout" type="relatedlayout"
                    label="PLG_RADICALMART_FIELDS_RELATED_LAYOUT"
-                   default="default"/>
+                   default="default"
+                   class="form-select"
+            />
 
             <field name="cols"
                    type="integer"
