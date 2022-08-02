@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   1.0.0
+ * @version   1.0.1
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -15,6 +15,7 @@ use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\Version;
@@ -262,6 +263,9 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		$model->setState('params', Factory::getApplication()->getParams());
 		$model->setState('filter.item_id', $value);
 		$model->setState('filter.published', 1);
+
+		// Set language filter state
+		$model->setState('filter.language', Multilanguage::isEnabled());
 
 		// Get items
 		$items  = $model->getItems();
