@@ -1,12 +1,12 @@
-# Плагин полей RadicalMart Field Кудфеув для CMS Joomla
+# Плагин полей RadicalMart Field Related для CMS Joomla
 
-### 1. Что это?
+### Что это?
 RadicalMart Field Related - плагин полей товара компонента RadicalMart. Плагин позволяет прикреплять к товарам связанные товары.
 
-### 2. Версии Joomla
+### Версии Joomla
 Плагин для версий Joomla 3.9+, 4+.
 
-### 3. Разное
+### Разное
 
 Плагин содержит 2 собственных макета default и grid.
 
