@@ -1,12 +1,14 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   1.0.1
+ * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
  * @link      https://fictionlabs.ru/
  */
+
+namespace Joomla\Plugin\RadicalmartFields\Related\Field;
 
 defined('_JEXEC') or die;
 
@@ -18,25 +20,24 @@ use Joomla\CMS\Form\Form;
 use Joomla\CMS\Form\FormField;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
-use Joomla\Database\ParameterType;
 
-class JFormFieldRelatedlayout extends FormField
+class PluginlayoutField extends FormField
 {
     /**
      * The form field type.
      *
      * @var  string
      *
-     * @since  1.4.0
+     * @since  1.1.0
      */
-    protected $type = 'relatedlayout';
+    protected $type = 'PluginLayout';
 
     /**
 	 * Method to get the field input for plugin layouts.
 	 *
 	 * @return  string  The field input.
 	 *
-	 * @since   1.6
+	 * @since   1.1.0
 	 */
 	protected function getInput()
 	{
@@ -116,7 +117,7 @@ class JFormFieldRelatedlayout extends FormField
 				// Create the group for the plugin
 				$groups['_'] = array();
 				$groups['_']['id'] = $this->id . '__';
-				$groups['_']['text'] = Text::sprintf('PLG_RADICALMART_FIELDS_RELATED_OPTION_PLUGIN');
+				$groups['_']['text'] = Text::sprintf('JGLOBAL_USE_GLOBAL');
 				$groups['_']['items'] = array();
 
 				foreach ($plugin_layouts as $file)

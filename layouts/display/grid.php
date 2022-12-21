@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   1.0.1
+ * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -11,8 +11,9 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Component\ComponentHelper;
-use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\Component\RadicalMart\Site\Helper\MediaHelper;
 
 extract($displayData);
 
@@ -26,23 +27,34 @@ extract($displayData);
  *
  */
 $hidePrice = (ComponentHelper::getParams('com_radicalmart')->get('hide_prices', 0) || !empty($product->price['hide']));
+
+if (!$hidePrice)
+{
+	/** @var Joomla\CMS\WebAsset\WebAssetManager $assets */
+	$assets = Factory::getApplication()->getDocument()->getWebAssetManager();
+	$assets->getRegistry()->addExtensionRegistryFile('com_radicalmart');
+	$assets->useScript('com_radicalmart.site.cart');
+}
+
 ?>
-<div class="radicalmart-related__item product-block uk-transition-toggle">
+<div class="radicalmart-related__item product-block uk-transition-toggle" <?php if (empty($product->in_stock)) echo 'style="opacity:0.5"'; ?>>
 	<div class="uk-overflow-hidden">
 		<div class="uk-position-relative">
 			<a href="<?php echo $product->link; ?>"
 			   class="uk-height-medium uk-width-1-1 uk-flex uk-flex-center uk-flex-middle uk-transition-scale-up uk-transition-opaque ">
-				<?php if ($image = $product->image)
-				{
-					$image = RadicalMartHelperMedia::findThumb($image);
-					echo HTMLHelper::image($image, htmlspecialchars($product->title),
-						array('class' => 'uk-height-max-medium'));
-				}
-				else
-				{
-					echo HTMLHelper::image('com_radicalmart/no-image.svg', htmlspecialchars($product->title),
-						array('class' => 'uk-height-max-medium'), true);
-				} ?>
+				<?php echo MediaHelper::renderImage(
+					'plg_radicalmart_fields_related.display.grid',
+					$product->image,
+					[
+						'alt'     => $product->title,
+						'loading' => 'lazy',
+						'class'   => 'uk-height-max-medium'
+					],
+					[
+						'product_id' => $product->id,
+						'no_image'   => true,
+						'thumb'      => true,
+					]); ?>
 			</a>
 			<?php if (!empty($product->badges)): ?>
 				<ul class="uk-thumbnav uk-position-top-right uk-margin-small-top">
@@ -52,10 +64,23 @@ $hidePrice = (ComponentHelper::getParams('com_radicalmart')->get('hide_prices', 
 							   title="<?php echo Text::sprintf('COM_RADICALMART_PRODUCT_BADGE_LINK', $badge->title); ?>">
 								<?php if ($src = $badge->media->get('icon'))
 								{
-									$src = RadicalMartHelperMedia::findThumb($src);
-									echo HTMLHelper::image($src, htmlspecialchars($badge->title));
+									echo MediaHelper::renderImage(
+										'plg_radicalmart_fields_related.display.grid.badge',
+										$src,
+										[
+											'alt'     => $badge->title,
+											'loading' => 'lazy',
+										],
+										[
+											'category_id' => $badge->id,
+											'no_image'    => false,
+											'thumb'       => true,
+										]);
 								}
-								else echo '<span class="uk-label">' . $badge->title . '</span>'; ?>
+								else
+								{
+									echo '<span class="uk-label">' . $badge->title . '</span>';
+								} ?>
 							</a>
 						</li>
 					<?php endforeach; ?>
@@ -64,7 +89,7 @@ $hidePrice = (ComponentHelper::getParams('com_radicalmart')->get('hide_prices', 
 		</div>
 	</div>
 	<div class="middle uk-margin-small">
-		<?php if ($product->category && $params->get('show_category', 1)): ?>
+		<?php if ($product->category): ?>
 			<div>
 				<a href="<?php echo $product->category->link; ?>"
 				   class="uk-text-nowrap uk-text-small uk-link-muted">
@@ -84,14 +109,24 @@ $hidePrice = (ComponentHelper::getParams('com_radicalmart')->get('hide_prices', 
 						<s><?php echo $product->price['base_string']; ?></s>
 					</div>
 				<?php endif; ?>
-				<div class="">
+				<div>
 					<strong><?php echo $product->price['final_string']; ?></strong>
 				</div>
+			<?php elseif (empty($product->in_stock)): ?>
+				<span class="uk-text-danger">
+					<?php echo Text::_('COM_RADICALMART_NOT_IN_STOCK'); ?>
+				</span>
 			<?php endif; ?>
 		</div>
 		<div>
 			<?php if (!$hidePrice && $mode === 'shop' && (int) $product->state === 1): ?>
 				<div radicalmart-cart="product" data-id="<?php echo $product->id; ?>">
+					<input radicalmart-cart="quantity" type="hidden" name="quantity"
+						   class="uk-input uk-form-width-xsmall uk-text-center"
+						   step="<?php echo $product->quantity['step']; ?>"
+						   min="<?php echo $product->quantity['min']; ?>"
+						<?php if (!empty($product->quantity['max'])) echo 'max="' . $product->quantity['max'] . '"'; ?>
+						   value="<?php echo $product->quantity['min']; ?>"/>
 					<span radicalmart-cart="add"
 						  class="uk-icon-button uk-link uk-background-primary uk-light" uk-icon="cart"
 						  uk-tooltip="" title="<?php echo Text::_('COM_RADICALMART_CART_ADD'); ?>"></span>

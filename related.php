@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   1.0.1
+ * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -16,11 +16,10 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Language\Multilanguage;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
-use Joomla\CMS\Version;
 use Joomla\Registry\Registry;
-use Joomla\CMS\MVC\Model\BaseDatabaseModel;
 use Joomla\Utilities\ArrayHelper;
 
 class plgRadicalMart_FieldsRelated extends CMSPlugin
@@ -53,6 +52,21 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 	protected $autoloadLanguage = true;
 
 	/**
+	 * Method to add field type to admin list.
+	 *
+	 * @param   string  $context  Context selector string.
+	 * @param   object  $item     List item object.
+	 *
+	 * @return string|false Field type constant on success, False on failure.
+	 *
+	 * @since  1.1.0
+	 */
+	public function onRadicalMartGetFieldType($context = null, $item = null)
+	{
+		return 'PLG_RADICALMART_FIELDS_RELATED_FIELD_TYPE';
+	}
+
+	/**
 	 * Method to add field config.
 	 *
 	 * @param   string    $context  Context selector string.
@@ -69,30 +83,9 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		Form::addFormPath(__DIR__ . '/config');
 		$form->loadFile('admin');
 
-		$form->setFieldAttribute('display_filter', 'type', 'hidden', 'params');
-		$form->setValue('display_filter', 'params', 0);
-
-		$form->setFieldAttribute('display_products', 'type', 'hidden', 'params');
-		$form->setValue('display_filter', 'params', 0);
-	}
-
-	/**
-	 * Prepare options data.
-	 *
-	 * @param   string  $context  Context selector string.
-	 * @param   object  $objData  Input data.
-	 * @param   Form    $form     Joomla Form object.
-	 *
-	 * @throws  Exception
-	 *
-	 * @since  1.0.0
-	 */
-	public function onContentNormaliseRequestData($context, $objData, $form)
-	{
-		if ($context === 'com_radicalmart.field')
-		{
-			// noop
-		}
+		$form->removeField('display_product', 'params');
+		$form->removeField('display_filter', 'params');
+		$form->removeField('display_variability', 'params');
 	}
 
 	/**
@@ -111,34 +104,17 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		if ($context !== 'com_radicalmart.product') return false;
 		if ($field->plugin !== 'related') return false;
 
-		// Add Javascript
-		if ((new Version())->isCompatible('4.0'))
-		{
-			Factory::getDocument()->addScriptDeclaration('
-	            document.addEventListener("DOMContentLoaded", function(event) {
-	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
-	                
-	                downloadLabel.classList.add(\'fw-bold\');
-	                downloadLabel.classList.add(\'mb-2\');
-	                downloadLabel.classList.remove(\'control-label\');
-	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-	            });
-	        ');
-		}
-		else{
-			Factory::getDocument()->addScriptDeclaration('
-	            document.addEventListener("DOMContentLoaded", function(event) {
-	                let downloadContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-	                let downloadLabel = downloadContainer.querySelector(\'.control-label\');
-	                
-	                downloadLabel.style.marginLeft = "28px";
-	                downloadLabel.classList.add(\'lead\');
-	                downloadLabel.classList.remove(\'control-label\');
-	                downloadContainer.querySelector(\'.controls\').classList.remove(\'controls\');
-	            });
-	        ');
-		}
+		$wa = $this->app->getDocument()->getWebAssetManager();
+		$wa->addInlineScript('
+            document.addEventListener("DOMContentLoaded", function(event) {
+                let relatedContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
+                let relatedLabel = relatedContainer.querySelector(\'.control-label\');
+                
+                relatedLabel.classList.add(\'fw-bold\', \'mb-2\', \'d-block\', \'w-100\');
+                relatedLabel.classList.remove(\'control-label\');
+                relatedLabel.querySelector(\'.controls\').classList.remove(\'controls\');
+            });
+        ');
 
 		// Add Stylesheet
 		Factory::getDocument()->addStyleDeclaration('
@@ -165,53 +141,6 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 	}
 
 	/**
-	 * Method to add field to filter form.
-	 *
-	 * @param   string  $context  Context selector string.
-	 * @param   object  $field    Field data object.
-	 * @param   array   $data     Data.
-	 *
-	 * @return false|SimpleXMLElement SimpleXMLElement on success, False on failure.
-	 *
-	 * @since  1.0.0
-	 */
-	public function onRadicalMartGetFilterFieldXml($context = null, $field = null, $data = null)
-	{
-		if ($field->plugin === 'related') return false;
-	}
-
-	/**
-	 * Method to modify query.
-	 *
-	 * @param   string          $context  Context selector string.
-	 * @param   JDatabaseQuery  $query    JDatabaseQuery  A JDatabaseQuery object to retrieve the data set
-	 * @param   object          $field    Field data object.
-	 * @param   array|string    $value    Value.
-	 *
-	 * @since  1.0.0
-	 */
-	public function onRadicalMartGetProductsListQuery($context = null, $query = null, $field = null, $value = null)
-	{
-		if ($field->plugin === 'related') return;
-	}
-
-	/**
-	 * Method to add field value to products list.
-	 *
-	 * @param   string        $context  Context selector string.
-	 * @param   object        $field    Field data object.
-	 * @param   array|string  $value    Field value.
-	 *
-	 * @return  string  Field html value.
-	 *
-	 * @since  1.0.0
-	 */
-	public function onRadicalMartGetProductsFieldValue($context = null, $field = null, $value = null)
-	{
-		if ($field->plugin === 'related') return;
-	}
-
-	/**
 	 * Method to add field value to products list.
 	 *
 	 * @param   string        $context  Context selector string.
@@ -234,8 +163,8 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 	/**
 	 * Method to add field value to products list.
 	 *
-	 * @param   object        $field   Field data object.
-	 * @param   string|array  $value   Field value.
+	 * @param   object        $field  Field data object.
+	 * @param   string|array  $value  Field value.
 	 *
 	 * @return  string|false  Field string values on success, False on failure.
 	 *
@@ -248,17 +177,15 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 
 		if (!is_array($value)) $value = array($value);
 
-		\JLoader::register('RadicalMartHelperIntegration', JPATH_ADMINISTRATOR . '/components/com_radicalmart/helpers/integration.php');
-		RadicalMartHelperIntegration::initializeSite();
-
-		BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_radicalmart/models');
+		// Model
+		if (!$model = Factory::getApplication()->bootComponent('com_radicalmart')->getMVCFactory()->createModel('Products', 'Site', ['ignore_request' => true]))
+		{
+			throw new \Exception(Text::_('PLG_RADICALMART_FIELDS_RELATED_ERROR_MODEL_NOT_FOUND'), 500);
+		}
 
 		// Get values
-		$value = ArrayHelper::getColumn($value,'id');
+		$value = ArrayHelper::getColumn($value, 'id');
 		$value = array_values(array_unique($value));
-
-		// Model
-		$model = BaseDatabaseModel::getInstance('Products', 'RadicalMartModel', array('ignore_request' => true));
 
 		$model->setState('params', Factory::getApplication()->getParams());
 		$model->setState('filter.item_id', $value);
@@ -272,7 +199,7 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		$params = $field->params;
 
 		// Get mode
-		$mode   = ComponentHelper::getParams('com_radicalmart')->get('mode', 'shop');
+		$mode = ComponentHelper::getParams('com_radicalmart')->get('mode', 'shop');
 
 		// Get html
 		$layout = $params->get('layout', 'default');
