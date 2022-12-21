@@ -83,9 +83,25 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		Form::addFormPath(__DIR__ . '/config');
 		$form->loadFile('admin');
 
-		$form->removeField('display_product', 'params');
-		$form->removeField('display_filter', 'params');
-		$form->removeField('display_variability', 'params');
+		$form->setFieldAttribute('display_products', 'readonly', 'true', 'params');
+		$form->setFieldAttribute('display_filter', 'readonly', 'true', 'params');
+		$form->setFieldAttribute('display_variability', 'readonly', 'true', 'params');
+	}
+
+	/**
+	 * Method to set field values.
+	 *
+	 * @param   string    $context  Context selector string.
+	 * @param   Form      $form     Form object.
+	 * @param   Registry  $tmpData  Temporary form data.
+	 *
+	 * @since  __DEPLOY_VERSION__
+	 */
+	public function onRadicalMartAfterGetFieldForm($context = null, $form = null, $tmpData = null)
+	{
+		$form->setValue('display_products', 'params', '0');
+		$form->setValue('display_filter', 'params', '0');
+		$form->setValue('display_variability', 'params', '0');
 	}
 
 	/**
