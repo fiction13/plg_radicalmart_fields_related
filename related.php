@@ -203,7 +203,6 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		$value = ArrayHelper::getColumn($value, 'id');
 		$value = array_values(array_unique($value));
 
-		$model->setState('params', Factory::getApplication()->getParams());
 		$model->setState('filter.item_id', $value);
 		$model->setState('filter.published', 1);
 
