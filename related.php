@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   __DEPLOY_VERSION__
+ * @version   1.0.2
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -95,7 +95,7 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 	 * @param   Form      $form     Form object.
 	 * @param   Registry  $tmpData  Temporary form data.
 	 *
-	 * @since  __DEPLOY_VERSION__
+	 * @since  1.0.2
 	 */
 	public function onRadicalMartAfterGetFieldForm($context = null, $form = null, $tmpData = null)
 	{
