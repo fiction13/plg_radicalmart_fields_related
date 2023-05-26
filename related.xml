@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package   plg_radicalmart_fields_related
-  ~ @version   1.0.2
+  ~ @version   __DEPLOY_VERSION__
   ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
   ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
   ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -16,7 +16,7 @@
     <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
     <authorEmail>info@fictionlabs.ru</authorEmail>
     <authorUrl>https://fictionlabs.ru</authorUrl>
-    <version>1.0.2</version>
+    <version>1.0.3-dev</version>
     <description>PLG_RADICALMART_FIELDS_RELATED_DESCRIPTION</description>
 	<namespace path="src">Joomla\Plugin\RadicalmartFields\Related</namespace>
 	<scriptfile>script.php</scriptfile>

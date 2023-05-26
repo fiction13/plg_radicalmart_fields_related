@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   plg_radicalmart_fields_related
- * @version   1.0.2
+ * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
