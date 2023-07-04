@@ -45,7 +45,6 @@
                    label="PLG_RADICALMART_FIELDS_RELATED_LAYOUT"
                    default="default"
                    class="form-select"
-                   layout="joomla.form.field.list-fancy-select"
             />
 
             <field name="cols"

@@ -30,7 +30,7 @@ class PluginlayoutField extends FormField
      *
      * @since  1.1.0
      */
-    protected $type = 'PluginLayout';
+    protected $type = 'pluginlayout';
 
     /**
 	 * Method to get the field input for plugin layouts.
@@ -171,19 +171,16 @@ class PluginlayoutField extends FormField
 			$attr = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
 			$attr .= $this->element['class'] ? ' class="' . (string) $this->element['class'] . '"' : '';
 
-			// Prepare HTML code
-			$html = array();
-
 			// Compute the current selected values
 			$selected = array($this->value);
 
 			// Add a grouped list
-			$html[] = HTMLHelper::_(
+			$html = HTMLHelper::_(
 				'select.groupedlist', $groups, $this->name,
 				array('id' => $this->id, 'class' => 'form-select', 'group.id' => 'id', 'list.attr' => $attr, 'list.select' => $selected)
 			);
 
-			return implode($html);
+			return $html;
 		}
 		else
 		{
