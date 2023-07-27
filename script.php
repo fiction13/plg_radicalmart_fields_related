@@ -1,7 +1,7 @@
 <?php
 /*
  * @package   RadicalMart Fields - Related
- * @version   __DEPLOY_VERSION__
+ * @version   1.0.3
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
  * @copyright Copyright (c) 2023 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
@@ -34,7 +34,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @var  AdministratorApplication
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected AdministratorApplication $app;
 
@@ -43,7 +43,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @var   DatabaseDriver
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected DatabaseDriver $db;
 
@@ -52,7 +52,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @var  string
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected string $minimumJoomla = '4.2';
 
@@ -61,7 +61,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @var  string
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected string $minimumPhp = '7.4';
 
@@ -70,7 +70,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @param   AdministratorApplication  $app  The application object.
 			 *
-			 * @since __DEPLOY_VERSION__
+			 * @since 1.0.3
 			 */
 			public function __construct(AdministratorApplication $app)
 			{
@@ -85,7 +85,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  boolean  True on success
 			 *
-			 * @since   __DEPLOY_VERSION__
+			 * @since   1.0.3
 			 */
 			public function install(InstallerAdapter $adapter): bool
 			{
@@ -101,7 +101,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  boolean  True on success
 			 *
-			 * @since   __DEPLOY_VERSION__
+			 * @since   1.0.3
 			 */
 			public function update(InstallerAdapter $adapter): bool
 			{
@@ -115,7 +115,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  boolean  True on success
 			 *
-			 * @since   __DEPLOY_VERSION__
+			 * @since   1.0.3
 			 */
 			public function uninstall(InstallerAdapter $adapter): bool
 			{
@@ -130,7 +130,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  boolean  True on success
 			 *
-			 * @since   __DEPLOY_VERSION__
+			 * @since   1.0.3
 			 */
 			public function preflight(string $type, InstallerAdapter $adapter): bool
 			{
@@ -151,7 +151,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  boolean  True on success
 			 *
-			 * @since   __DEPLOY_VERSION__
+			 * @since   1.0.3
 			 */
 			public function postflight(string $type, InstallerAdapter $adapter): bool
 			{
@@ -177,7 +177,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  bool True on success, False on failure.
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected function checkCompatible(): bool
 			{
@@ -209,7 +209,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @param   InstallerAdapter  $adapter  Parent object calling object.
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected function enablePlugin(InstallerAdapter $adapter)
 			{
@@ -232,7 +232,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  bool  True on success.
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			public function parseLayouts(SimpleXMLElement $element = null, Installer $installer = null): bool
 			{
@@ -283,7 +283,7 @@ return new class () implements ServiceProviderInterface {
 			 *
 			 * @return  bool  True on success.
 			 *
-			 * @since  __DEPLOY_VERSION__
+			 * @since  1.0.3
 			 */
 			protected function removeLayouts(SimpleXMLElement $element = null): bool
 			{
