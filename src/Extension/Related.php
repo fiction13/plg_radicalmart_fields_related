@@ -1,55 +1,98 @@
 <?php
 /*
- * @package   plg_radicalmart_fields_related
+ * @package   RadicalMart Fields - Related
  * @version   __DEPLOY_VERSION__
  * @author    Dmitriy Vasyukov - https://fictionlabs.ru
- * @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+ * @copyright Copyright (c) 2023 Fictionlabs. All rights reserved.
  * @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
  * @link      https://fictionlabs.ru/
  */
 
-defined('_JEXEC') or die;
+namespace Joomla\Plugin\RadicalMartFields\Related\Extension;
 
-use Joomla\CMS\Application\CMSApplication;
+\defined('_JEXEC') or die;
+
 use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Filesystem\Path;
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\LanguageHelper;
 use Joomla\CMS\Language\Multilanguage;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Layout\LayoutHelper;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Plugin\PluginHelper;
+use Joomla\CMS\Table\Language;
+use Joomla\Component\RadicalMart\Administrator\Helper\PluginsHelper;
+use Joomla\Event\DispatcherInterface;
+use Joomla\Event\SubscriberInterface;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+use SimpleXMLElement;
 
-class plgRadicalMart_FieldsRelated extends CMSPlugin
+class Related extends CMSPlugin implements SubscriberInterface
 {
+	/**
+	 * Load the language file on instantiation.
+	 *
+	 * @var    bool
+	 *
+	 * @since  __DEPLOY_VERSION__
+	 */
+	protected $autoloadLanguage = true;
+
 	/**
 	 * Loads the application object.
 	 *
-	 * @var  CMSApplication
+	 * @var  \Joomla\CMS\Application\CMSApplication
 	 *
-	 * @since  1.0.0
+	 * @since  __DEPLOY_VERSION__
 	 */
 	protected $app = null;
 
 	/**
 	 * Loads the database object.
 	 *
-	 * @var  JDatabaseDriver
+	 * @var  \Joomla\Database\DatabaseDriver
 	 *
-	 * @since  1.0.0
+	 * @since  __DEPLOY_VERSION__
 	 */
 	protected $db = null;
 
 	/**
-	 * Affects constructor behavior.
+	 * Constructor
 	 *
-	 * @var  boolean
+	 * @param   DispatcherInterface  &$subject  The object to observe
+	 * @param   array                 $config   An optional associative array of configuration settings.
+	 *                                          Recognized key values include 'name', 'group', 'params', 'language'
+	 *                                          (this list is not meant to be comprehensive).
 	 *
-	 * @since  1.0.0
+	 * @since   __DEPLOY_VERSION__
 	 */
-	protected $autoloadLanguage = true;
+	public function __construct(&$subject, $config = array())
+	{
+		parent::__construct($subject, $config);
+
+
+	}
+
+	/**
+	 * Returns an array of events this subscriber will listen to.
+	 *
+	 * @return  array
+	 *
+	 * @since   __DEPLOY_VERSION__
+	 */
+	public static function getSubscribedEvents(): array
+	{
+		return [
+			'onRadicalMartGetFieldType'          => 'onRadicalMartGetFieldType',
+			'onRadicalMartGetFieldForm'          => 'onRadicalMartGetFieldForm',
+			'onRadicalMartGetProductFieldXml'    => 'onRadicalMartGetProductFieldXml',
+			'onRadicalMartGetProductFieldValue'  => 'onRadicalMartGetProductFieldValue',
+			'onRadicalMartAfterGetFieldForm'     => 'onRadicalMartAfterGetFieldForm'
+		];
+	}
 
 	/**
 	 * Method to add field type to admin list.
@@ -80,7 +123,7 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		if ($context !== 'com_radicalmart.field') return;
 		if ($tmpData->get('plugin') !== 'related') return;
 
-		Form::addFormPath(__DIR__ . '/config');
+		Form::addFormPath(JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/forms');
 		$form->loadFile('admin');
 
 		$form->setFieldAttribute('display_products', 'readonly', 'true', 'params');
@@ -120,27 +163,8 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		if ($context !== 'com_radicalmart.product') return false;
 		if ($field->plugin !== 'related') return false;
 
-		$wa = $this->app->getDocument()->getWebAssetManager();
-		$wa->addInlineScript('
-            document.addEventListener("DOMContentLoaded", function(event) {
-                let relatedContainer = document.querySelector(\'input[name="jform[fields][' . $field->alias . ']"]\').parentElement.parentElement;
-                let relatedLabel = relatedContainer.querySelector(\'.control-label\');
-                
-                relatedLabel.classList.add(\'fw-bold\', \'mb-2\', \'d-block\', \'w-100\');
-                relatedLabel.classList.remove(\'control-label\');
-                relatedLabel.querySelector(\'.controls\').classList.remove(\'controls\');
-            });
-        ');
-
-		// Add Stylesheet
-		Factory::getDocument()->addStyleDeclaration('
-            input[id*="' . str_replace('-', '_', $field->alias) . '"] {
-                width: inherit;
-            }
-        ');
-
 		// Add fields
-		$file = Path::find(__DIR__ . '/config', 'product.xml');
+		$file = Path::find(JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name . '/forms', 'product.xml');
 
 		if (!$file)
 		{
@@ -205,6 +229,7 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 
 		$model->setState('filter.item_id', $value);
 		$model->setState('filter.published', 1);
+		$model->setState('list.limit', count($value));
 
 		// Set language filter state
 		$model->setState('filter.language', Multilanguage::isEnabled());
@@ -212,6 +237,11 @@ class plgRadicalMart_FieldsRelated extends CMSPlugin
 		// Get items
 		$items  = $model->getItems();
 		$params = $field->params;
+
+		if (empty($items))
+		{
+			return false;
+		}
 
 		// Get mode
 		$mode = ComponentHelper::getParams('com_radicalmart')->get('mode', 'shop');

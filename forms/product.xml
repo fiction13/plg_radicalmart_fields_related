@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package   RadicalMart Fields - Related
+  ~ @version   __DEPLOY_VERSION__
+  ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
+  ~ @copyright Copyright (c) 2023 Fictionlabs. All rights reserved.
+  ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
+  ~ @link      https://fictionlabs.ru/
+  -->
+
+<field name="related" type="subform"
+       parentclass="stack"
+       layout="joomla.form.field.subform.repeatable"
+       multiple="true">
+    <form>
+        <field name="id" type="products"
+               label="PLG_RADICALMART_FIELDS_RELATED_OPTIONS_PRODUCT"
+               class="input-large"
+               image="true"
+               icons="true"/>
+
+        <field name="text" type="text"
+               label="PLG_RADICALMART_FIELDS_RELATED_OPTIONS_TEXT"
+               class="input-large w-100"/>
+    </form>
+</field>

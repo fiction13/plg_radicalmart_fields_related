@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ @package   plg_radicalmart_fields_related
+  ~ @package   RadicalMart Fields - Related
   ~ @version   __DEPLOY_VERSION__
   ~ @author    Dmitriy Vasyukov - https://fictionlabs.ru
-  ~ @copyright Copyright (c) 2022 Fictionlabs. All rights reserved.
+  ~ @copyright Copyright (c) 2023 Fictionlabs. All rights reserved.
   ~ @license   GNU/GPL license: http://www.gnu.org/copyleft/gpl.html
   ~ @link      https://fictionlabs.ru/
   -->
 
 <form>
     <fieldset name="content">
-        <fields name="params" addfieldprefix="Joomla\Plugin\RadicalmartFields\Related\Field">
+        <fields name="params" addfieldprefix="Joomla\Plugin\RadicalMartFields\Related\Field">
             <field name="required" type="radio"
                    label="PLG_RADICALMART_FIELDS_RELATED_REQUIRED"
                    class="btn-group btn-group-yesno"
@@ -41,10 +41,12 @@
                 <option value="0">JNO</option>
             </field>
 
-            <field name="layout" type="pluginlayout"
+            <field name="layout" type="layout"
                    label="PLG_RADICALMART_FIELDS_RELATED_LAYOUT"
                    default="default"
                    class="form-select"
+                   plugin="related"
+                   plugin_type="radicalmart_fields"
             />
 
             <field name="cols"
